@@ -1,0 +1,30 @@
+<!-- Conteúdo ATUALIZADO para: core/templates/core/confirma_exclusao_venda.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+    <div class="card border-danger" style="max-width: 500px;">
+        <div class="card-header bg-danger text-white">
+            <h3>Você tem certeza?</h3>
+        </div>
+        <div class="card-body">
+            <p class="card-text">Você está prestes a excluir permanentemente a venda:</p>
+            <p class="card-text">
+                <strong>Venda #{{ venda.id_vendas }}</strong>  
+
+                Cliente: {{ venda.id_clientes.nome }}  
+
+                Veículo: {{ venda.id_veiculos.nome }}
+            </p>
+            <p class="text-muted">Esta ação não pode ser desfeita.</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sim, tenho certeza</button>
+                <a href="{% url 'lista_vendas' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

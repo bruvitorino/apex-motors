@@ -1,0 +1,38 @@
+<!-- Conteúdo ATUALIZADO para: core/templates/core/form_cliente.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Adicionar Cliente{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Adicionar Novo Cliente</h1>
+
+    <form method="POST" style="max-width: 500px;">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome do Cliente:</label>
+            <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="endereco" class="form-label">Endereço:</label>
+            <textarea class="form-control" id="endereco" name="endereco" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_concessionaria" class="form-label">Concessionária:</label>
+            <select class="form-select" id="id_concessionaria" name="id_concessionaria" required>
+                <option value="" disabled selected>Selecione uma concessionária</option>
+                {% for c in concessionarias %}
+                    <option value="{{ c.id_concessionarias }}">{{ c.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Salvar Cliente</button>
+            <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

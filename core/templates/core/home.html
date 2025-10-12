@@ -1,0 +1,240 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Apex Motors - O Futuro da Mobilidade{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="gradient-bg text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-5xl font-bold mb-6 gradient-text">
+            O Futuro da Mobilidade
+        </h2>
+        <p class="text-xl text-slate-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+            A <strong>Apex Motors</strong> está na vanguarda da inovação automotiva brasileira, 
+            oferecendo uma linha completa de veículos que combinam performance, tecnologia e design excepcional. 
+            Cada modelo da nossa linha representa o ápice da engenharia moderna, proporcionando uma experiência de condução única e inspiradora.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            <div class="flex flex-col items-center">
+                <i class="bi bi-shield-check text-6xl text-blue-400 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Segurança Avançada</h3>
+                <p class="text-slate-400">Sistemas de segurança de última geração</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <i class="bi bi-lightning-charge text-6xl text-blue-400 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Tecnologia Inovadora</h3>
+                <p class="text-slate-400">Recursos tecnológicos de ponta</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <i class="bi bi-award text-6xl text-blue-400 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Qualidade Premium</h3>
+                <p class="text-slate-400">Excelência em cada detalhe</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vehicles Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center text-slate-900 mb-4">Nossa Linha Completa</h2>
+        <p class="text-xl text-slate-600 text-center mb-12 max-w-3xl mx-auto">
+            Descubra os 7 modelos da linha Apex Motors, cada um projetado para atender diferentes necessidades e estilos de vida.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for veiculo in veiculos %}
+            <div class="bg-white rounded-2xl shadow-lg card-hover overflow-hidden border border-slate-200">
+                <div class="relative overflow-hidden">
+                    {% if veiculo.nome == 'Apex Neo' %}
+                        <img src="{% static 'images/apex_neo.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% elif veiculo.nome == 'Apex Verso' %}
+                        <img src="{% static 'images/apex_verso.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% elif veiculo.nome == 'Apex Stratos' %}
+                        <img src="{% static 'images/apex_stratos.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% elif veiculo.nome == 'Apex Orion' %}
+                        <img src="{% static 'images/apex_orion.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% elif veiculo.nome == 'Apex Titan' %}
+                        <img src="{% static 'images/apex_titan.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% elif veiculo.nome == 'Apex Vortex' %}
+                        <img src="{% static 'images/apex_vortex.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% elif veiculo.nome == 'Apex Ion' %}
+                        <img src="{% static 'images/apex_ion.png' %}" alt="{{ veiculo.nome }}" class="w-full h-64 object-cover transition-transform duration-300 hover:scale-105">
+                    {% else %}
+                        <div class="w-full h-64 bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
+                            <i class="bi bi-car-front text-6xl text-slate-400"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute top-4 right-4 bg-slate-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {{ veiculo.tipo }}
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">{{ veiculo.nome }}</h3>
+                    <p class="text-slate-600 mb-4 leading-relaxed">
+                        {% if veiculo.nome == 'Apex Neo' %}
+                            Hatchback compacto moderno, ideal para jovens e famílias que buscam economia e estilo urbano.
+                        {% elif veiculo.nome == 'Apex Verso' %}
+                            MPV espaçoso e versátil, perfeito para famílias que precisam de praticidade sem abrir mão do conforto.
+                        {% elif veiculo.nome == 'Apex Stratos' %}
+                            SUV compacto que combina versatilidade urbana com capacidade de aventura e design robusto.
+                        {% elif veiculo.nome == 'Apex Orion' %}
+                            Sedan elegante e sofisticado, ideal para executivos que valorizam status e refinamento.
+                        {% elif veiculo.nome == 'Apex Titan' %}
+                            Caminhonete robusta que combina capacidade de trabalho com versatilidade para lazer.
+                        {% elif veiculo.nome == 'Apex Vortex' %}
+                            Supercar de alta performance que representa o ápice da engenharia e design esportivo.
+                        {% elif veiculo.nome == 'Apex Ion' %}
+                            Sedan elétrico premium que representa o futuro da mobilidade sustentável com tecnologia de ponta.
+                        {% endif %}
+                    </p>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-slate-800 mb-2">Características:</h4>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            {% if veiculo.nome == 'Apex Neo' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Economia de combustível</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Design moderno</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Tecnologia conectada</li>
+                            {% elif veiculo.nome == 'Apex Verso' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> 7 lugares</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Espaço generoso</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Versatilidade familiar</li>
+                            {% elif veiculo.nome == 'Apex Stratos' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Tração elevada</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Design aventureiro</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Versatilidade urbana</li>
+                            {% elif veiculo.nome == 'Apex Orion' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Elegância premium</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Conforto executivo</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Tecnologia avançada</li>
+                            {% elif veiculo.nome == 'Apex Titan' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Força titânica</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Capacidade de carga</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Versatilidade trabalho/lazer</li>
+                            {% elif veiculo.nome == 'Apex Vortex' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Performance máxima</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Design agressivo</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Tecnologia racing</li>
+                            {% elif veiculo.nome == 'Apex Ion' %}
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> 100% elétrico</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Tecnologia futurista</li>
+                                <li class="flex items-center"><i class="bi bi-star-fill text-blue-500 mr-2"></i> Sustentabilidade premium</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-3xl font-bold text-green-600">R$ {{ veiculo.valor|floatformat:0 }}</span>
+                        <button onclick="openModal({{ veiculo.id_veiculos }})" class="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-6 py-3 rounded-lg hover:from-slate-700 hover:to-slate-800 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl">
+                            Solicitar Proposta
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-8 text-center">
+                    <i class="bi bi-info-circle text-4xl text-blue-500 mb-4"></i>
+                    <p class="text-blue-700 text-lg">Nenhum veículo disponível no momento.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="gradient-bg text-white py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-6 gradient-text">
+                Entre em Contato
+            </h2>
+            <p class="text-xl text-slate-300 mb-12 text-center">
+                Nossa equipe está pronta para ajudá-lo a encontrar o veículo perfeito
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <i class="bi bi-telephone text-6xl text-blue-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">Telefone</h3>
+                <p class="text-slate-300 text-lg">(11) 9999-8888</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-envelope text-6xl text-blue-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">E-mail</h3>
+                <p class="text-slate-300 text-lg">contato@apexmotors.com.br</p>
+            </div>
+            <div class="text-center">
+                <i class="bi bi-geo-alt text-6xl text-blue-400 mb-4"></i>
+                <h3 class="text-2xl font-bold text-white mb-2">Endereço</h3>
+                <p class="text-slate-300 text-lg">Av. Motors, 1000  
+São Paulo - SP</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div id="vehicleModal" class="modal">
+    <div class="modal-content">
+        <div id="modalBody"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openModal(vehicleId) {
+    const modal = document.getElementById('vehicleModal');
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <div class="p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-3xl font-bold text-slate-900">Solicitar Proposta</h3>
+                <button onclick="closeModal()" class="text-slate-500 hover:text-slate-700 text-3xl">&times;</button>
+            </div>
+            <p class="text-slate-600 mb-6">
+                Entre em contato conosco para receber uma proposta personalizada para este veículo.
+            </p>
+            <div class="space-y-4">
+                <p class="text-slate-700"><i class="bi bi-telephone text-blue-500 mr-2"></i> (11) 9999-8888</p>
+                <p class="text-slate-700"><i class="bi bi-envelope text-blue-500 mr-2"></i> contato@apexmotors.com.br</p>
+            </div>
+            <div class="mt-8 flex justify-end space-x-4">
+                <button onclick="closeModal()" class="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+                    Fechar
+                </button>
+                <a href="tel:1199998888" class="bg-gradient-to-r from-slate-800 to-slate-900 text-white px-8 py-3 rounded-lg hover:from-slate-700 hover:to-slate-800 transition-all duration-300 font-semibold shadow-lg">
+                    Ligar Agora
+                </a>
+            </div>
+        </div>
+    `;
+    modal.classList.add('show');
+}
+
+function closeModal() {
+    const modal = document.getElementById('vehicleModal');
+    modal.classList.remove('show');
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('vehicleModal');
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}

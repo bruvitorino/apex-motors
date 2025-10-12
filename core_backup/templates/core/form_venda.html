@@ -1,0 +1,63 @@
+<!-- Conteúdo ATUALIZADO para: core/templates/core/form_venda.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Adicionar Venda{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Adicionar Nova Venda</h1>
+
+    <form method="POST" style="max-width: 600px;">
+        {% csrf_token %}
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="id_cliente" class="form-label">Cliente:</label>
+                <select class="form-select" id="id_cliente" name="id_cliente" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    {% for obj in clientes %}<option value="{{ obj.id_clientes }}">{{ obj.nome }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="id_veiculo" class="form-label">Veículo:</label>
+                <select class="form-select" id="id_veiculo" name="id_veiculo" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    {% for obj in veiculos %}<option value="{{ obj.id_veiculos }}">{{ obj.nome }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="id_vendedor" class="form-label">Vendedor:</label>
+                <select class="form-select" id="id_vendedor" name="id_vendedor" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    {% for obj in vendedores %}<option value="{{ obj.id_vendedores }}">{{ obj.nome }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="id_concessionaria" class="form-label">Concessionária:</label>
+                <select class="form-select" id="id_concessionaria" name="id_concessionaria" required>
+                    <option value="" disabled selected>Selecione...</option>
+                    {% for obj in concessionarias %}<option value="{{ obj.id_concessionarias }}">{{ obj.nome }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="valor_pago" class="form-label">Valor Pago:</label>
+                <input type="number" step="0.01" class="form-control" id="valor_pago" name="valor_pago" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="data_venda" class="form-label">Data da Venda:</label>
+                <input type="datetime-local" class="form-control" id="data_venda" name="data_venda" required>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Salvar Venda</button>
+            <a href="{% url 'lista_vendas' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!-- Conteúdo ATUALIZADO para: core/templates/core/form_vendedor.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Adicionar Vendedor{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Adicionar Novo Vendedor</h1>
+
+    <form method="POST" style="max-width: 500px;">
+        {% csrf_token %}
+        
+        <!-- Campo Nome -->
+        <div class="mb-3">
+            <label for="nome" class="form-label">Nome do Vendedor:</label>
+            <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+
+        <!-- Campo Concessionária (dropdown) -->
+        <div class="mb-3">
+            <label for="id_concessionaria" class="form-label">Concessionária:</label>
+            <select class="form-select" id="id_concessionaria" name="id_concessionaria" required>
+                <option value="" disabled selected>Selecione uma concessionária</option>
+                {% for c in concessionarias %}
+                    <option value="{{ c.id_concessionarias }}">{{ c.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Botões -->
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Salvar Vendedor</button>
+            <a href="{% url 'lista_vendedores' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{% endblock %}

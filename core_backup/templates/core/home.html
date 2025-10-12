@@ -1,0 +1,40 @@
+<!-- Conteúdo para: core/templates/core/home.html -->
+
+{% extends 'core/base.html' %}
+
+{% block title %}Bem-vindo à Apex Motors{% endblock %}
+
+{% block content %}
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold">Apex Motors</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">Encontre o veículo dos seus sonhos. Qualidade e confiança que aceleram com você.</p>
+        </div>
+    </div>
+
+    <h2 class="mb-4">Nossos Veículos</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for veiculo in veiculos %}
+            <div class="col">
+                <div class="card h-100">
+                    <!-- Se tivéssemos uma imagem, ela iria aqui -->
+                    <!-- <img src="..." class="card-img-top" alt="{{ veiculo.nome }}"> -->
+                    <div class="card-body">
+                        <h5 class="card-title">{{ veiculo.nome }}</h5>
+                        <p class="card-text"><strong>Tipo:</strong> {{ veiculo.tipo }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="text-end">R$ {{ veiculo.valor }}</h4>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col">
+                <div class="alert alert-info">Nenhum veículo disponível no momento.</div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,392 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard - Apex Motors{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Dashboard Administrativo</h1>
+        <div>
+            <a href="{% url 'exportar_pdf' %}" class="btn btn-danger me-2">
+                <i class="bi bi-file-pdf"></i> Exportar PDF
+            </a>
+            <a href="{% url 'exportar_excel' %}" class="btn btn-success">
+                <i class="bi bi-file-excel"></i> Exportar Excel
+            </a>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Vendas</h5>
+                    <h2 class="mb-0">{{ total_vendas }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Receita Total</h5>
+                    <h2 class="mb-0" id="receita-total">R$ {{ faturamento_total|floatformat:2 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Clientes</h5>
+                    <h2 class="mb-0">{{ total_clientes }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Vendedores</h5>
+                    <h2 class="mb-0">{{ total_vendedores }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mb-4">
+        <!-- Monthly Sales Chart -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">📈 Vendas Mensais</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlySalesChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Sales Chart -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🚗 Vendas por Veículo</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="vehicleSalesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Revenue Chart -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">💰 Receita Mensal</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlyRevenueChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Sellers Chart -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🏆 Top 5 Vendedores</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topSellersChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dealership Sales Chart -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">🏢 Vendas por Concessionária (Top 10)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="dealershipSalesChart" height="60"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Formatar receita total no card
+document.addEventListener('DOMContentLoaded', function() {
+    const receitaElement = document.getElementById('receita-total');
+    const valorTexto = receitaElement.textContent.replace('R$ ', '').trim();
+    const valor = parseFloat(valorTexto);
+    
+    if (!isNaN(valor)) {
+        const valorFormatado = valor.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+        receitaElement.textContent = valorFormatado;
+    }
+});
+
+// Parse data from Django context
+const mesesLabels = JSON.parse('{{ meses_labels|safe }}');
+const vendasCount = JSON.parse('{{ vendas_count|safe }}');
+const receitaValues = JSON.parse('{{ receita_values|safe }}');
+const veiculosLabels = JSON.parse('{{ veiculos_labels|safe }}');
+const veiculosData = JSON.parse('{{ veiculos_data|safe }}');
+const veiculosColors = JSON.parse('{{ veiculos_colors|safe }}');
+const concessionariasLabels = JSON.parse('{{ concessionarias_labels|safe }}');
+const concessionariasData = JSON.parse('{{ concessionarias_data|safe }}');
+const vendedoresLabels = JSON.parse('{{ vendedores_labels|safe }}');
+const vendedoresData = JSON.parse('{{ vendedores_data|safe }}');
+
+// Função para formatar valores em Real brasileiro
+function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    });
+}
+
+// Chart.js default settings
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = '#6c757d';
+
+// 1. Monthly Sales Chart (Line Chart)
+const monthlySalesCtx = document.getElementById('monthlySalesChart').getContext('2d');
+const monthlySalesChart = new Chart(monthlySalesCtx, {
+    type: 'line',
+    data: {
+        labels: mesesLabels,
+        datasets: [{
+            label: 'Número de Vendas',
+            data: vendasCount,
+            borderColor: '#0d6efd',
+            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 5,
+            pointHoverRadius: 7
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// 2. Vehicle Sales Chart (Doughnut Chart)
+const vehicleSalesCtx = document.getElementById('vehicleSalesChart').getContext('2d');
+const vehicleSalesChart = new Chart(vehicleSalesCtx, {
+    type: 'doughnut',
+    data: {
+        labels: veiculosLabels,
+        datasets: [{
+            data: veiculosData,
+            backgroundColor: veiculosColors,
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 15,
+                    font: {
+                        size: 11
+                    }
+                }
+            }
+        }
+    }
+});
+
+// 3. Monthly Revenue Chart (Area Chart)
+const monthlyRevenueCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
+const monthlyRevenueChart = new Chart(monthlyRevenueCtx, {
+    type: 'line',
+    data: {
+        labels: mesesLabels,
+        datasets: [{
+            label: 'Receita (R$)',
+            data: receitaValues,
+            borderColor: '#198754',
+            backgroundColor: 'rgba(25, 135, 84, 0.2)',
+            tension: 0.4,
+            fill: true,
+            pointRadius: 5,
+            pointHoverRadius: 7
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(context) {
+                        return 'Receita: ' + formatarMoeda(context.parsed.y);
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return formatarMoeda(value);
+                    }
+                }
+            }
+        }
+    }
+});
+
+// 4. Top Sellers Chart (Horizontal Bar Chart)
+const topSellersCtx = document.getElementById('topSellersChart').getContext('2d');
+const topSellersChart = new Chart(topSellersCtx, {
+    type: 'bar',
+    data: {
+        labels: vendedoresLabels,
+        datasets: [{
+            label: 'Vendas',
+            data: vendedoresData,
+            backgroundColor: '#ffc107',
+            borderColor: '#ffb300',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// 5. Dealership Sales Chart (Bar Chart)
+const dealershipSalesCtx = document.getElementById('dealershipSalesChart').getContext('2d');
+const dealershipSalesChart = new Chart(dealershipSalesCtx, {
+    type: 'bar',
+    data: {
+        labels: concessionariasLabels,
+        datasets: [{
+            label: 'Número de Vendas',
+            data: concessionariasData,
+            backgroundColor: '#0dcaf0',
+            borderColor: '#0aa2c0',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+</script>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}
+
+canvas {
+    max-height: 400px;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+.bg-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+
+.bg-warning {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+}
+</style>
+{% endblock %}
