@@ -31,6 +31,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-    CSRF_TRUSTED_ORIGINS = [
-        'https://*.onrender.com',
-    ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.onrender.com",
+]
