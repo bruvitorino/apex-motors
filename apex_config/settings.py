@@ -7,6 +7,8 @@ from django.urls import path
 
 ROOT_URLCONF = 'apex_config.urls'
 
+WSGI_APPLICATION = 'apex_config.wsgi.application'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
