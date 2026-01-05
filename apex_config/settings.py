@@ -76,3 +76,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CSRF_TRUSTED_ORIGINS = [
     "https://apex-motors.onrender.com",
 ]
+
+# Login/Logout Configuration
+LOGIN_URL = '/contas/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
+
