@@ -1,12 +1,10 @@
 """
 Management command para popular o banco de dados do Apex Motors
-Versão 2.0 - Com criação de superusuário
 Arquivo: core/management/commands/seed_data.py
 """
 
 from django.core.management.base import BaseCommand
 from django.db import connection
-from django.contrib.auth import get_user_model
 from datetime import datetime
 
 
@@ -22,9 +20,6 @@ class Command(BaseCommand):
             
             # Popular com dados
             self.popular_veiculos()
-            
-            # Criar superusuário
-            self.criar_superusuario()
             
             self.stdout.write(self.style.SUCCESS('✅ Seed concluído com sucesso!'))
             
@@ -135,28 +130,3 @@ class Command(BaseCommand):
                 """, veiculo)
             
         self.stdout.write(self.style.SUCCESS(f'  ✅ {len(veiculos)} veículos inseridos'))
-
-    def criar_superusuario(self):
-        """Cria o superusuário admin se não existir"""
-        self.stdout.write('👤 Criando superusuário...')
-        
-        User = get_user_model()
-        
-        # Verifica se já existe um superusuário
-        if User.objects.filter(is_superuser=True).exists():
-            self.stdout.write(self.style.WARNING('  ⚠️  Superusuário já existe. Pulando...'))
-            return
-        
-        # Cria o superusuário
-        try:
-            User.objects.create_superuser(
-                username='admin',
-                email='admin@apexmotors.com',
-                password='admin'
-            )
-            self.stdout.write(self.style.SUCCESS('  ✅ Superusuário criado'))
-            self.stdout.write(self.style.SUCCESS('     Username: admin'))
-            self.stdout.write(self.style.SUCCESS('     Password: admin'))
-            self.stdout.write(self.style.WARNING('     ⚠️  MUDE A SENHA EM PRODUÇÃO!'))
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  ❌ Erro ao criar superusuário: {e}'))
